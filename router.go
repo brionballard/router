@@ -12,26 +12,26 @@ type RouteEntry struct {
 	Handler http.HandlerFunc
 }
 
-func (r *Router) Route(m, p string, h http.HandlerFunc) {
+func (rtr *Router) Route(m, p string, h http.HandlerFunc) {
 	e := RouteEntry{
 		Method:  m,
 		Path:    p,
 		Handler: h,
 	}
-	r.routes = append(r.routes, e)
+	rtr.routes = append(rtr.routes, e)
 }
 
-func (rtr *RouteEntry) MatchRoute(w http.ResponseWriter, r *http.Request) bool {
+func (re *RouteEntry) MatchRoute(w http.ResponseWriter, r *http.Request) bool {
 	allowed := true
 
-	if r.URL.Path != rtr.Path {
+	if r.URL.Path != re.Path {
 		allowed = false
 		http.NotFound(w, r)
 	}
 
-	if rtr.Method != r.Method {
+	if re.Method != r.Method {
 		allowed = false
-		http.Error(w, r.Method+" method not allowed for route "+rtr.Path, http.StatusMethodNotAllowed)
+		http.Error(w, r.Method+" method not allowed for route "+re.Path, http.StatusMethodNotAllowed)
 	}
 
 	return allowed
